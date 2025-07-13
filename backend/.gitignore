@@ -1,0 +1,55 @@
+# Node modules (backend + frontend)
+node_modules/
+client/node_modules/
+#upload folder
+uploads
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
+client/build/
+client/dist/
+
+# Environment files
+.env
+.env.* 
+*.env.local
+
+# Cache / temp
+.cache/
+client/.cache/
+tmp/
+temp/
+
+# Coverage reports
+coverage/
+
+# VSCode settings
+.vscode/
+
+# IDE folders
+.idea/
+
+# Uploaded files (optional - if storing locally during development)
+uploads/
+public/uploads/
+
+# Mac/Linux system files
+*.swp
+*~

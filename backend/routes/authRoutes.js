@@ -1,0 +1,235 @@
+/*  Registeration with OTP 
+    Reset Password with JWT Authentication
+    Login with JWT Authentication
+    Forgot Password with OTP
+*/
+
+const express = require('express');
+const router = express.Router();
+const sendMail = require('../services/mailer')
+const userModel = require('../models/userModel');
+const { jwtAuth, generateToken } = require('../services/jwt');
+const uploadImage = require('../services/cloudUpload');
+const rateLimit = require('express-rate-limit');
+const otpLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000,
+  max: 3,
+  message: 'Too many OTP requests, try again later.',
+});
+
+
+const otpMap = new Map(); 
+
+router.post('/request-otp',otpLimiter,uploadImage.single('image'), async (req, res) => {
+    const { name, email, password } = req.body;
+    const imageUrl = req.file ? req.file.path : null;
+    
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+        return res.status(409).json({ error: 'Email already registered' });
+        }
+
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    otpMap.set(email, { name, email, password,imageUrl, otp, expiresAt: Date.now() + 5 * 600000 });
+
+    let response = sendMail(email,otp);
+
+    console.log("Response from mailer:", response); 
+    console.log("OTP", otp);
+
+
+    if (response instanceof Error) {
+            return res.status(500).json({ error: 'Email is Wrong!!' });
+        }
+        res.status(200).json({ message: 'OTP sent successfully', otp });
+
+});
+
+router.post('/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+
+  const record = otpMap.get(email);
+  
+  if (!record || record.otp !== otp || record.expiresAt < Date.now()) {
+    return res.status(400).json({ error: "Invalid or expired OTP" });
+  }
+  else{
+    try {
+        const newUser = new userModel({ username: record.name, email, password: record.password , avatarUrl:record.imageUrl});
+        const payload = {
+                    id: newUser._id,
+                    username: newUser.username,
+                };
+        const token = generateToken(payload);
+                
+        await newUser.save();
+        otpMap.delete(email);
+
+        res.json({ message: "User created successfully",
+            token: token,
+           
+         });
+
+        }
+        catch (error) {
+                console.error('Error creating user:', error);
+                res.status(500).json({ error: 'Internal server error' });
+        }
+  }
+});
+
+// Login a user->generate a token send the token
+router.post('/login', async (req, res) => {
+    const {email, password } = req.body;
+    try {
+        const user = await userModel.findOne({ email: email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        
+        if(await user.comparePassword(password)) {
+            const payload = {
+                id: user._id,
+                username: user.email,
+            };
+            const token = generateToken(payload);
+            user.lastLogin = Date.now();
+            await user.save();
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production', 
+                sameSite: 'Strict', 
+                maxAge: 24 * 60 * 60 * 1000 
+            });
+            res.status(200).json({
+                message: 'Login successful',
+                token: token,
+            });
+        } else {
+            res.status(401).json({ message: 'Invalid password' });
+        }  
+    } catch (error) {
+        res.status(400).json({ message: 'Error logging in', error });
+    }
+});
+
+router.post('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.status(200).json({ message: 'Logged out' });
+});
+
+// Update user password
+router.put('/update-pass', jwtAuth, async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    
+    try {
+        const user = await userModel.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        else{
+            if (await user.comparePassword(oldPassword)) {
+                user.password = newPassword;
+                await user.save();
+                res.status(200).json({ message: 'Password updated successfully' });
+            } else {
+                res.status(401).json({ message: 'Old password is incorrect' });
+            }
+        }
+    } catch (error) {
+        res.status(400).json({ message: 'Error updating password', error });
+    }});
+    
+//Forgot password using OTP
+router.post('/forgot-pass', otpLimiter,async (req, res) => {
+    const { email } = req.body;
+    const user = await userModel.findOne({ 
+        email: email
+    });
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    otpMap.set(email, { otp, expiresAt: Date.now() + 5 * 600000 });
+    let response = sendMail(email, otp);
+    console.log("OTP", otp);
+    if (response instanceof Error) {
+        return res.status(500).json({ error: 'Email is Wrong!!' });
+    }
+    res.status(200).json({ message: 'OTP sent successfully', otp });
+
+});
+
+//Reset password using OTP verification
+router.post('/reset-pass', async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+    const record = otpMap.get(email);
+    if (!record || record.otp !== otp || record.expiresAt < Date.now())
+    {
+        return res.status(400).json({ error: "Invalid or expired OTP" });
+    }
+    else{
+        
+        try {
+            const user = await userModel.findOne({
+                email: email
+            });
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+            user.password = newPassword;
+            await user.save();
+            otpMap.delete(email);
+            res.status(200).json({ message: 'Password reset successfully' });
+        } 
+        
+        catch (error) {
+            res.status(400).json({ message: 'Error resetting password', error });
+        }
+
+    }
+
+});
+
+// Get user profile for user verification using JWT
+router.get('/me', jwtAuth, async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user.id).select('-password'); // exclude password
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+
+module.exports = router;
+    
+
+
+
+
+// Uncomment the following code if you want to implement basic user registration
+    // router.post('/register', async (req, res) => {
+      
+    //     const { username, password, email } = req.body;
+    //     try {
+    //         const newUser = new userModel({ username, password, email, lastLogin: Date.now(), createdAt: Date.now() });
+    //         const payload = {
+    //             id: newUser._id,
+    //             username: newUser.username,
+    //         };
+    //         const token = generateToken(payload);
+            
+    //         await newUser.save();
+    //         res.status(201).json({
+    //             message: 'User registered successfully',
+    //             token: token,
+    //         });
+          
+    //     } catch (error) {
+    //         console.error('Error registering user:', error);
+    //         res.status(400).json({ message: 'Error registering user', error });
+    //     }
+    // });
