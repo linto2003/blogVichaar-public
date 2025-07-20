@@ -1,0 +1,15 @@
+/* Root layout */
+#root {
+  width: 100%;
+   padding: 10px 10px 32px 10px; 
+  text-align: center;
+}
+
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}

@@ -1,0 +1,45 @@
+.edit-blog-page {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.section {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.view-mode {
+  border: 1px dashed #ccc;
+  padding: 10px;
+  cursor: pointer;
+  min-height: 50px;
+  background-color: #f9f9f9;
+}
+
+.preview img {
+  max-width: 100%;
+  height: auto;
+  margin-top: 10px;
+}
+
+.image-section {
+  margin-top: 30px;
+}
+
+
+
+.blog-button {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: white;
+  background-color: #007bff;
+  text-decoration: none;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.blog-button:hover {
+  background-color: #0056b3;
+}

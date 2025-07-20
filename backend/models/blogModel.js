@@ -7,7 +7,8 @@ const blogSchema = new mongoose.Schema(
    author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
    tags: { type: [String], default: [] },
    imageUrl: { type: String, default: null },
-   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+   likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+   views: {type:[String]}
    
   },
   { timestamps: true }

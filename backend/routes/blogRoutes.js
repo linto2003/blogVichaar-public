@@ -60,6 +60,25 @@ router.get('/my-blogs',jwtAuthMiddleware, async (req, res) => {
 
      });
 
+router.get('/:id',jwtAuthMiddleware, async (req, res) => {
+     const blogId = req.params.id;
+     
+     try {
+          
+          const blog = await blogModel.findById(blogId).populate('author', 'username avatarUrl').sort({ createdAt: -1 });
+          let liked = false;
+          if(blog.likes.includes(req.user.id)){
+               liked = true;
+          }
+          
+          res.status(200).json({liked:liked, blog:blog});
+     } catch (error) {
+          res.status(500).json({ message: 'Error fetching blogs', error });
+          console.log(error)
+     }
+
+     });
+
 router.put('/:id',jwtAuthMiddleware,uploadImage.single('image'),async(req,res) =>{
 
      const blogId = req.params.id;
@@ -67,7 +86,7 @@ router.put('/:id',jwtAuthMiddleware,uploadImage.single('image'),async(req,res) =
      const imageUrl = req.file ? req.file.path : null;
 
      try{
-          blog = await blogModel.findById(blogId);
+          const blog = await blogModel.findById(blogId);
           if (blog){
                if (title) blog.title = title;
                if (content) blog.content = content;
@@ -125,6 +144,25 @@ router.patch('/:id/like',jwtAuthMiddleware,async (req, res) => {
   await blog.save();
   res.json({ liked: !liked, likesCount: blog.likes.length });
 
+});
+
+
+router.patch('/:id/views', async (req, res) => {
+  try {
+    const blog = await blogModel.findById(req.params.id);
+    if (!blog) return res.status(404).json({ error: 'Blog not found' });
+
+    const userIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+    if (!blog.views.includes(userIp)) {
+      blog.views.push(userIp);
+      await blog.save();
+    }
+
+    res.json({ viewCount: blog.views.length });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 module.exports = router;

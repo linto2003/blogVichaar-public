@@ -6,23 +6,27 @@
 
 const express = require('express');
 const router = express.Router();
-const sendMail = require('../services/mailer')
+const dotenv = require('dotenv');
+const sendMail = require('../services/mailer');
 const userModel = require('../models/userModel');
-const { jwtAuth, generateToken } = require('../services/jwt');
+const tokenModel = require('../models/tokenModel');
+const { jwtAuth, generateAccessToken,generateRefreshToken } = require('../services/jwt');
 const uploadImage = require('../services/cloudUpload');
 const rateLimit = require('express-rate-limit');
+const jwt = require('jsonwebtoken');
 const otpLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
   max: 3,
   message: 'Too many OTP requests, try again later.',
 });
 
+dotenv.config();
 
 const otpMap = new Map(); 
 
 router.post('/request-otp',otpLimiter,uploadImage.single('image'), async (req, res) => {
     const { name, email, password } = req.body;
-    const imageUrl = req.file ? req.file.path : null;
+    const imageUrl = req.file ? req.file.path :process.env.AUTHOR_STATIC;
     
     const existingUser = await userModel.findOne({ email });
     if (existingUser) {
@@ -43,7 +47,7 @@ router.post('/request-otp',otpLimiter,uploadImage.single('image'), async (req, r
     if (response instanceof Error) {
             return res.status(500).json({ error: 'Email is Wrong!!' });
         }
-        res.status(200).json({ message: 'OTP sent successfully', otp });
+        res.status(200).json({ message: 'OTP sent successfully' });
 
 });
 
@@ -51,7 +55,17 @@ router.post('/verify-otp', async (req, res) => {
   const { email, otp } = req.body;
 
   const record = otpMap.get(email);
-  
+
+  const ua = req.useragent;
+
+  const deviceInfo = {
+    browser: ua.browser,
+    version: ua.version,
+    os: ua.os,
+    platform: ua.platform,
+    source: ua.source
+  }
+
   if (!record || record.otp !== otp || record.expiresAt < Date.now()) {
     return res.status(400).json({ error: "Invalid or expired OTP" });
   }
@@ -62,14 +76,29 @@ router.post('/verify-otp', async (req, res) => {
                     id: newUser._id,
                     username: newUser.username,
                 };
-        const token = generateToken(payload);
-                
+        
+        const refreshToken = generateRefreshToken(payload);
+        const accessToken = generateAccessToken(payload);
+        await tokenModel.deleteMany({ userId: newUser._id, 'deviceInfo.source': ua.source });
+        await tokenModel.create({ userId: newUser._id, 
+            token: refreshToken,
+            deviceInfo:deviceInfo ,
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        });
+               
         await newUser.save();
         otpMap.delete(email);
 
+
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 
+            });
+
         res.json({ message: "User created successfully",
-            token: token,
-           
+            token: accessToken, 
          });
 
         }
@@ -83,41 +112,100 @@ router.post('/verify-otp', async (req, res) => {
 // Login a user->generate a token send the token
 router.post('/login', async (req, res) => {
     const {email, password } = req.body;
+    
     try {
-        const user = await userModel.findOne({ email: email });
+        const user = await userModel.findOne({ email: email.trim() });
+        
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
         
+        const ua = req.useragent;
+
+        const deviceInfo = {
+            browser: ua.browser,
+            version: ua.version,
+            os: ua.os,
+            platform: ua.platform,
+            source: ua.source
+        }
+
         if(await user.comparePassword(password)) {
             const payload = {
                 id: user._id,
                 username: user.email,
-            };
-            const token = generateToken(payload);
+            }
+       
+            const refreshToken = generateRefreshToken(payload);
+            const accessToken = generateAccessToken(payload);
+            await tokenModel.deleteMany({ userId: user._id, 'deviceInfo.source': ua.source });
+            await tokenModel.create({ userId: user._id, 
+                token: refreshToken,
+                deviceInfo:deviceInfo ,
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+            });
+
             user.lastLogin = Date.now();
             await user.save();
-            res.cookie('token', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production', 
-                sameSite: 'Strict', 
-                maxAge: 24 * 60 * 60 * 1000 
+
+
+            res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 
             });
+
             res.status(200).json({
-                message: 'Login successful',
-                token: token,
-            });
-        } else {
+                    message: 'Login successful',
+                    token: accessToken,
+                });
+        } 
+        
+        else {
             res.status(401).json({ message: 'Invalid password' });
-        }  
+        } 
+
     } catch (error) {
+        console.log(error)
         res.status(400).json({ message: 'Error logging in', error });
     }
 });
+ 
+// Generates new refresh token if needed and gives away access tokens when expired
+router.get('/refresh', (req, res) => {
+  const token = req.cookies.refreshToken;
+  if (!token) {
+    return res.status(401).json({ message: 'No refresh token found in cookies' });
+  }
 
-router.post('/logout', (req, res) => {
-  res.clearCookie('token');
-  res.status(200).json({ message: 'Logged out' });
+  jwt.verify(token, process.env.JWT_REFRESH_SECRET, async(err, user) => {
+    if (err) return res.status(403).json({ message: 'Invalid refresh token' });
+
+    const storedToken = await tokenModel.find({userId:user.id,token:token});
+    if(!storedToken){
+        return res.status(500).json({message:'No token found in DB'})
+    }
+    
+    const accessToken = generateAccessToken({ id: user.id, username: user.username });
+    req.user = user;
+    res.status(200).json({ token: accessToken });
+  });
+});
+
+//Logout with clearing refresh token and accesstoken 
+router.post('/logout',jwtAuth, async (req, res) => {
+  try{
+      await tokenModel.deleteMany({ userId: req.user.id });
+      console.log("Token Deleted");
+    }
+    catch(error){
+        console.log("Token not Deleted: ",error);
+
+        return res.status(500).json({message:error});
+    }
+    res.clearCookie('refreshToken');
+    res.status(200).json({ message: 'Logged out' });
 });
 
 // Update user password
@@ -207,29 +295,3 @@ router.get('/me', jwtAuth, async (req, res) => {
 module.exports = router;
     
 
-
-
-
-// Uncomment the following code if you want to implement basic user registration
-    // router.post('/register', async (req, res) => {
-      
-    //     const { username, password, email } = req.body;
-    //     try {
-    //         const newUser = new userModel({ username, password, email, lastLogin: Date.now(), createdAt: Date.now() });
-    //         const payload = {
-    //             id: newUser._id,
-    //             username: newUser.username,
-    //         };
-    //         const token = generateToken(payload);
-            
-    //         await newUser.save();
-    //         res.status(201).json({
-    //             message: 'User registered successfully',
-    //             token: token,
-    //         });
-          
-    //     } catch (error) {
-    //         console.error('Error registering user:', error);
-    //         res.status(400).json({ message: 'Error registering user', error });
-    //     }
-    // });

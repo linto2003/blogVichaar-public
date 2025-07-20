@@ -19,12 +19,14 @@ const jwtAuth = (req, res, next) => {
 
 // JWT GENERATE TOKEN 
 
-const generateToken = (user) => {
-    return jwt.sign(user, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-    });
-}
+const generateAccessToken = (user) => {
+  return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '15m' });
+};
+
+const generateRefreshToken = (user) => {
+  return jwt.sign(user, process.env.JWT_REFRESH_SECRET, { expiresIn: '7hr' });
+};
 
 module.exports = {
-    jwtAuth,generateToken
+    jwtAuth,generateAccessToken,generateRefreshToken
 };
