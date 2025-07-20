@@ -14,7 +14,6 @@ const allowedOrigins = [
   'http://localhost:5173'
 ];
 
-// ✅ Apply CORS middleware BEFORE any routes
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -25,8 +24,6 @@ app.use(cors({
   },
   credentials: true, 
 }));
-
-app.options('*', cors());
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
