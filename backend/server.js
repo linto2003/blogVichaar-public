@@ -20,7 +20,7 @@ const cors = require('cors');
 // }));
 
 
-const allowedOrigins = ['https://b5jf25nx-5173.inc1.devtunnels.ms','http://localhost:5173'];
+const allowedOrigins = ['https://blogvichaar.netlify.app','http://localhost:5173'];
         
 app.use(cors({
           origin: function (origin, callback) {
