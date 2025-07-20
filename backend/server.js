@@ -25,6 +25,8 @@ app.use(cors({
   credentials: true, 
 }));
 
+app.options('*', cors());
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
