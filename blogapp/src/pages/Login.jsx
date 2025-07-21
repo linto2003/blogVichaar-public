@@ -30,7 +30,6 @@ const Login =() =>{
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        console.log("Login:", { email, pwd });
         try {
         const response = await axios.post('/auth/login', {
         email,
@@ -41,7 +40,6 @@ const Login =() =>{
 
         setAuth({email,pwd,accessToken});
 
-        console.log("User logged", response.data);
         
         navigate(from , {replace: true});
     } catch (error) {

@@ -63,7 +63,7 @@ const Register = () => {
       setErrMsg("Please fill all fields correctly before sending OTP.");
       return;
     }
-    console.log("OTP sent to:", email);
+    alert("OTP sent to:", email);
 
      try {
     const formData = new FormData();
@@ -78,7 +78,6 @@ const Register = () => {
       },
     });
 
-    console.log("OTP sent:", response.data);
     setOtpSent(true);
   } catch (error) {
      if (error.response && error.response.data && error.response.data.error) {
@@ -97,14 +96,13 @@ const Register = () => {
       setErrMsg("Invalid or missing OTP.");
       return;
     }
-    console.log("Registered:", { user, email, pwd, otp });
+    
      try {
     const response = await axios.post('/auth/verify-otp', {
       email,
       otp,
     });
-
-    console.log("User created:", response.data);
+    
     navigate(from , {replace: true});
   } catch (error) {
     console.error("OTP verification failed:", error.response.data.error);
