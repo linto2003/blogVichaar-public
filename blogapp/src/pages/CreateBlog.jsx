@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useAxiosPrivate from '../hooks/useAxiosPrivate.jsx'; 
 import InputField from "../components/HelperComponent.jsx";
 import "../css/CreateBlog.css";
+import AdBanner from "../components/AdComponent.jsx";
 
 const CreateBlog = () => {
   const [title, setTitle] = useState("");
@@ -48,6 +49,7 @@ const CreateBlog = () => {
   return (
     <div className="create-blog-container">
       <h2>Create a New Blog</h2>
+      <AdBanner />
       <form onSubmit={handleSubmit} className="create-blog-form">
         <InputField
           id="title"
@@ -106,6 +108,10 @@ const CreateBlog = () => {
           Publish Blog
         </button>
       </form>
+      <p className="instruction">
+        Note: Ensure your image is less than 2MB for optimal performance.
+      </p>
+
     </div>
   );
 };

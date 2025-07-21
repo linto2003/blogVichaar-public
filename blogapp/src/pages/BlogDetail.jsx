@@ -6,6 +6,8 @@ import '../css/BlogTile.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconButton from '../components/IconButton';
 import { faHeart, faEye} from '@fortawesome/free-solid-svg-icons';
+import AdBanner from '../components/AdComponent';
+
 
 const BlogDetail = () => {
   const { id } = useParams();
@@ -92,6 +94,8 @@ const BlogDetail = () => {
 
 
     <div className="content">{blog.content}</div>
+
+    <AdBanner/>
     </div>
   );
 };

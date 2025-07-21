@@ -31,7 +31,7 @@ const UserProfile = () => {
     <>
     <div className="profile-container">
       <h2>User Profile</h2>
-      <img src={user.avatarUrl || '/default-avatar.png'} alt="Avatar" className="profile-avatar" />
+      <img src={user.avatarUrl} alt="Avatar" className="profile-avatar" />
       <p><strong>Username:</strong> {user.username}</p>
       <p><strong>Email:</strong> {user.email}</p>
       <p><strong>Joined:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>

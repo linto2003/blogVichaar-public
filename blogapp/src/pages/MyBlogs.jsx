@@ -4,6 +4,7 @@ import BlogTile from '../components/BlogTile';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import '../css/Home.css';
 import { Link } from 'react-router-dom';
+import AdBanner from '../components/AdComponent';
 
 const MyBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -45,6 +46,8 @@ const MyBlogs = () => {
                 </Link>
                 </div>
             ))}
+        
+        <AdBanner/>
         </div>
 
         ) : (

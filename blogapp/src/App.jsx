@@ -14,6 +14,14 @@ import MyBlogs from './pages/MyBlogs.jsx';
 import EditBlogSections from './pages/EditBlog.jsx';
 
 function App() {
+  useEffect(() => {
+      const script = document.createElement("script");
+      script.src =
+        "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2197482294942971";
+      script.async = true;
+      script.crossOrigin = "anonymous";
+      document.body.appendChild(script);
+    }, []);
   return (
     <Routes>
       <Route element={<Layout />}>
