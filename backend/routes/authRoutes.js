@@ -184,7 +184,8 @@ router.get('/refresh', (req, res) => {
 
     const storedToken = await tokenModel.find({userId:user.id,token:token});
     if(!storedToken){
-        return res.status(500).json({message:'No token found in DB'})
+        console.log("No token found in DB");
+        return res.status(403).json({message:'No token found in DB'})
     }
     
     const accessToken = generateAccessToken({ id: user.id, username: user.username });
@@ -204,7 +205,11 @@ router.post('/logout',jwtAuth, async (req, res) => {
 
         return res.status(500).json({message:error});
     }
-    res.clearCookie('refreshToken');
+    res.clearCookie('refreshToken', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None',
+    });
     res.status(200).json({ message: 'Logged out' });
 });
 
