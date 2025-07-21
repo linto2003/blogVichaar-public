@@ -32,7 +32,6 @@ const PersistentLogin = () => {
 
   useEffect(()=>{
     console.log(isLoading);
-    console.log(auth?.accessToken);
   },[isLoading])
 
   return (
