@@ -63,7 +63,7 @@ const Register = () => {
       setErrMsg("Please fill all fields correctly before sending OTP.");
       return;
     }
-    alert("OTP sent to:", email);
+    
 
      try {
     const formData = new FormData();
@@ -79,6 +79,7 @@ const Register = () => {
     });
 
     setOtpSent(true);
+    alert("OTP sent to:", email);
   } catch (error) {
      if (error.response && error.response.data && error.response.data.error) {
     setErrMsg(error.response.data.error); 
@@ -87,7 +88,6 @@ const Register = () => {
         }
         errRef.current.focus();
         }
-    
   };
 
   const handleSubmit = async (e) => {
