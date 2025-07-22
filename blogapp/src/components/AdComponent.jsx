@@ -2,11 +2,13 @@ import { useEffect, useRef } from 'react';
 
 const AdBanner = () => {
   const adRef = useRef(null);
+  const initialized = useRef(false);
 
   useEffect(() => {
-    if (window.adsbygoogle && adRef.current) {
+    if (window.adsbygoogle && adRef.current && !initialized.current) {
       try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
+        window.adsbygoogle.push({});
+        initialized.current = true;
       } catch (err) {
         console.error("AdsbyGoogle error:", err);
       }

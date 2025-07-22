@@ -1,7 +1,11 @@
 .edit-blog-page {
   max-width: 600px;
-  margin: 2rem auto;
+  margin-left: auto;      /* Center the block horizontally */
+  margin-right: auto;     /* Center the block horizontally */
+  margin-top: 2rem;
+  margin-bottom: 2rem;
   padding: 1rem;
+  white-space: pre-line;
 }
 
 .section {
@@ -15,6 +19,7 @@
   cursor: pointer;
   min-height: 50px;
   background-color: #f9f9f9;
+  text-align: left;       /* Ensure text is left-aligned */
 }
 
 .preview img {
@@ -26,8 +31,6 @@
 .image-section {
   margin-top: 30px;
 }
-
-
 
 .blog-button {
   display: inline-block;

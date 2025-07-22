@@ -80,6 +80,8 @@ const handleSave = async (field) => {
                     : e.target.value,
               })
             }
+            rows={field === "content" ? 14 : 4} 
+            style={field === "content" ? { minHeight: "220px", width: "100%" } : { width: "100%" }}
           />
           <button onClick={() => handleSave(field)}>Save</button>
         </>
