@@ -32,6 +32,9 @@ router.post('/request-otp',otpLimiter,uploadImage.single('image'), async (req, r
     if (existingUser) {
         return res.status(409).json({ error: 'Email already registered' });
         }
+    else if (await userModel.findOne({ username: name })) {
+        return res.status(409).json({ error: 'Username already taken' });
+    }
 
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
