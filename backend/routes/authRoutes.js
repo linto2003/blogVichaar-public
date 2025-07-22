@@ -28,12 +28,20 @@ router.post('/request-otp',otpLimiter,uploadImage.single('image'), async (req, r
     const { name, email, password } = req.body;
     const imageUrl = req.file ? req.file.path :process.env.AUTHOR_STATIC;
     
-    const existingUser = await userModel.findOne({ email });
+    const existingUser = await userModel.findOne({
+    $or: [
+        { email },
+        { username: name }
+    ]
+    });
     if (existingUser) {
+    if (existingUser.email === email && existingUser.username === name) {
+        return res.status(409).json({ error: 'Email and username already registered' });
+    } else if (existingUser.email === email) {
         return res.status(409).json({ error: 'Email already registered' });
-        }
-    else if (await userModel.findOne({ username: name })) {
+    } else {
         return res.status(409).json({ error: 'Username already taken' });
+    }
     }
 
 
