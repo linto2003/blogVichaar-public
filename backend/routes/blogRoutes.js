@@ -13,7 +13,7 @@ router.post('/create',jwtAuthMiddleware,uploadImage.single('image'), async (req,
               title,
               content,
               author: req.user.id, 
-              tags: tags ? tags.split(',') : [],
+              tags: Array.isArray(tags) ? tags : tags ? tags.split(',') : [],
               imageUrl
          });
          await newBlog.save();
