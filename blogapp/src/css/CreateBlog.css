@@ -32,7 +32,8 @@ input#content {
   background: #fafafa;
   border-radius: 6px;
   border: 1px solid #ccc;
-  resize: vertical; 
+  resize: vertical;
+  font-family: 'Merriweather', 'Georgia', serif; 
 }
 
 .preview img {
