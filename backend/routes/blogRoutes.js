@@ -20,7 +20,7 @@ router.post('/create',jwtAuthMiddleware,uploadImage.single('image'), async (req,
          res.status(201).json({ message: 'Blog created successfully', blog: newBlog });
     } catch (error) {
          res.status(500).json({ message: 'Error creating blog', error });
-         console.error(error);
+         console.error(error.message);
     }
 });
 
