@@ -22,9 +22,8 @@
   padding: 1rem 2rem;
 }
 
-/* Optional: Add padding to body so content isn't hidden under navbar */
 body {
-  padding-top: 80px; /* Adjust based on navbar height */
+  padding-top: 80px; 
 }
 
 .logo {
@@ -42,9 +41,10 @@ body {
 .nav-links a {
   margin-left: 1rem;
   text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  font-size: 1rem;
+  color: #ffffff;
+  font-family: "McLaren", cursive;
+  font-weight: 700;         
+  font-size: 1.1rem;
   transition: color 0.3s ease;
 }
 
@@ -70,6 +70,9 @@ body {
 
 .link-button.logout {
   color: #b30000;
+  font-family: "McLaren", cursive;
+  font-weight: 700;         
+  font-size: 1.1rem;
 }
 
 .link-button.logout:hover {
