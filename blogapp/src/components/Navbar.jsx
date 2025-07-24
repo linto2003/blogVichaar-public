@@ -4,6 +4,8 @@ import '../css/Navbar.css';
 import useLogout from '../hooks/useLogout';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
   const logout = useLogout();
@@ -45,7 +47,9 @@ const Navbar = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
-          <button type="submit" className="search-btn">🔍</button>
+          <button type="submit" className="search-btn">
+            <FontAwesomeIcon icon={faSearch} />
+          </button>
         </form>
       <div className="nav-links">
 
