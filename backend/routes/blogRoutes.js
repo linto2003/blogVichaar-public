@@ -67,7 +67,8 @@ router.get('/:id', async (req, res) => {
           
           const blog = await blogModel.findById(blogId).populate('author', 'username avatarUrl').sort({ createdAt: -1 });
           let liked = false;
-          if(blog.likes.includes(req.user.id)){
+          
+          if(blog.likes.includes(req.user?.id)){
                liked = true;
           }
           
