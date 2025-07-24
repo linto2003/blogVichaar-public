@@ -60,19 +60,14 @@ router.get('/my-blogs',jwtAuthMiddleware, async (req, res) => {
 
      });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id',async (req, res) => {
      const blogId = req.params.id;
      
      try {
           
           const blog = await blogModel.findById(blogId).populate('author', 'username avatarUrl').sort({ createdAt: -1 });
-          let liked = false;
           
-          if(blog.likes.includes(req.user?.id)){
-               liked = true;
-          }
-          
-          res.status(200).json({liked:liked, blog:blog});
+          res.status(200).json({ blog:blog});
      } catch (error) {
           res.status(500).json({ message: 'Error fetching blogs', error });
           console.log(error)
@@ -129,13 +124,23 @@ router.delete('/:id', jwtAuthMiddleware, async (req, res) => {
 });
 
 //Likes
+
+router.get('/:id/like',jwtAuthMiddleware,async (req, res) => {
+  const blog = await blogModel.findById(req.params.id);
+  const userId = req.user.id;
+  if (!blog) return res.status(404).json({ error: 'Blog not found' });
+  const liked = blog.likes.includes(userId);
+  res.json({ liked: liked });
+});
+
 router.patch('/:id/like',jwtAuthMiddleware,async (req, res) => {
   const blog = await blogModel.findById(req.params.id);
   const userId = req.user.id;
 
   if (!blog) return res.status(404).json({ error: 'Blog not found' });
-
+  
   const liked = blog.likes.includes(userId);
+  console.log(liked);
   if (liked) {
     blog.likes.pull(userId);
   } else {

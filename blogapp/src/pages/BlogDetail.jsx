@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import axios from '../api/axios';
 import '../css/BlogDetail.css';
 import '../css/BlogTile.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -38,14 +39,20 @@ const BlogDetail = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       try {
-        const response = await axiosPrivate.get(`/blog/${id}`);
+        const blogRes= await axios.get(`/blog/${id}`);
         const viewsRes = await axiosPrivate.patch(`/blog/${id}/views`);
-
-        const { liked, blog } = response.data;
+        try {
+          const likeRes = await axiosPrivate.get(`/blog/${id}/like`);
+          const liked = likeRes.data.liked;
+          setLiked(liked);
+        } catch (likeError) {
+          setLiked(false);
+        }
+  
+        const blog = blogRes.data.blog;
         const viewCount = viewsRes.data.viewCount;
-
         setBlog(blog);
-        setLiked(liked);
+        
         setLikeCount(blog.likes.length);
         setViews(viewCount);
       } catch (error) {
