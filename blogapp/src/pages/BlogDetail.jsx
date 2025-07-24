@@ -29,7 +29,7 @@ const BlogDetail = () => {
     } catch (err) {
       console.error('Error liking blog:', err);
 
-      if (err?.response?.status === 401) {
+      if (err?.response?.status === 401 || err?.response?.status === 403) {
         navigate('/login', { state: { from: location }, replace: true });
       }
     }

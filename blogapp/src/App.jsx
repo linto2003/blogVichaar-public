@@ -33,9 +33,9 @@ function App() {
       <Route  element={<MainLayout/>}>
         <Route element={<PersistentLogin/>}>
           <Route path='/' element={<Home />} />
+          <Route path="/blog/:id" element={<BlogDetail />} />
             <Route element={<RequireAuth/>}>
               <Route path="profile" element={<UserProfile />} />
-              <Route path="/blog/:id" element={<BlogDetail />} />
               <Route path="blog/edit/:id" element={<EditBlogSections/>}/>
               <Route path="write" element={<CreateBlog/>}/>
               <Route path="my-blogs" element={<MyBlogs/>}/>
