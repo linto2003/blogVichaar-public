@@ -24,6 +24,17 @@ input[type="file"] {
   border-radius: 6px;
 }
 
+input#content {
+  min-height: 220px;
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1rem;
+  background: #fafafa;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical; 
+}
+
 .preview img {
   max-width: 100%;
   height: auto;
