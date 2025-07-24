@@ -4,9 +4,7 @@ const userModel = require('../models/userModel');
 
 router.get('/profile', async (req, res) => {
   try {
-   
     const user = await userModel.findById(req.user.id);
-   
     res.status(200).json(user); 
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

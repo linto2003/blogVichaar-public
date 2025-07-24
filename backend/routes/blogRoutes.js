@@ -60,7 +60,7 @@ router.get('/my-blogs',jwtAuthMiddleware, async (req, res) => {
 
      });
 
-router.get('/:id',jwtAuthMiddleware, async (req, res) => {
+router.get('/:id', async (req, res) => {
      const blogId = req.params.id;
      
      try {
