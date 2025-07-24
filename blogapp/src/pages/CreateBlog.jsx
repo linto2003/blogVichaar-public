@@ -90,7 +90,7 @@ const CreateBlog = () => {
           icon
         />
 
-        <label htmlFor="image">Upload Image</label>
+        <label htmlFor="image">Upload Image -only png,jpg,jpeg allowed</label>
         <input
           type="file"
           id="image"

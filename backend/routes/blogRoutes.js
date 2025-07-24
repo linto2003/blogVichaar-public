@@ -18,10 +18,15 @@ router.post('/create',jwtAuthMiddleware,uploadImage.single('image'), async (req,
          });
          await newBlog.save();
          res.status(201).json({ message: 'Blog created successfully', blog: newBlog });
-    } catch (error) {
-         res.status(500).json({ message: 'Error creating blog', error });
-         console.error(JSON.stringify(error, Object.getOwnPropertyNames(error)) );
-    }
+    } 
+    catch (error) {
+    res.status(500).json({ 
+        message: 'Error fetching blogs', 
+        error: error.message, 
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+    });
+    console.error(error);
+     }
 });
 
 router.get('/all', async (req, res) => {
