@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema(
     email:    { type: String, required: true, unique: true, lowercase: true },
     avatarUrl: { type: String, default: null },
     lastLogin: { type: Date, default: Date.now },
-    bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Blog' }]
+    bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Blogs' }]
   },
   { timestamps: true }
 );

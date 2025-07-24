@@ -8,6 +8,7 @@ import AdBanner from '../components/AdComponent';
 
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
+  const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const Home = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const response = await axiosPrivate.get('/blog/all');
+        const response = await axiosPrivate.get('/blog/all')
         setBlogs(response.data);
       } catch (error) {
         const errorMsg = error?.response?.data?.message;
@@ -27,7 +28,17 @@ const Home = () => {
       }
     };
 
+    const fetchBookmarks = async () => {
+      try {
+        const response = await axiosPrivate.get('/info/bookmark');
+        setBookmarks(response.data);
+      } catch (error) {
+        console.error('Error fetching bookmarks:', error);
+      }
+    }
+
     fetchBlogs();
+    fetchBookmarks();
   }, [navigate]);
 
   return (
@@ -39,9 +50,14 @@ const Home = () => {
         ) : blogs.length > 0 ? (
           <div className="blog-list">
             {blogs.map((blog) => (
+              bookmarks.includes(blog._id) ? (
               <Link to={`/blog/${blog._id}`} className="blog-button-home" key={blog._id}>
-                <BlogTile blog={blog} />
+                <BlogTile blog={blog} bookmarked={true}/>
+              </Link>) : (
+              <Link to={`/blog/${blog._id}`} className="blog-button-home" key={blog._id}>
+                <BlogTile blog={blog} bookmarked={false} />  
               </Link>
+              )
             ))}
           </div>
         ) : (

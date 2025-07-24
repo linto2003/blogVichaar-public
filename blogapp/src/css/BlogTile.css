@@ -74,3 +74,9 @@
 .blog-tile strong {
   font-weight: 600;
 }
+
+.bookmark-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}

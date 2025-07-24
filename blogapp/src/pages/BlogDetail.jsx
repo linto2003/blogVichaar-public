@@ -6,7 +6,7 @@ import '../css/BlogDetail.css';
 import '../css/BlogTile.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconButton from '../components/IconButton';
-import { faHeart, faEye} from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faEye, faBookmark} from '@fortawesome/free-solid-svg-icons';
 import AdBanner from '../components/AdComponent';
 
 
@@ -18,6 +18,7 @@ const BlogDetail = () => {
 
   const [blog, setBlog] = useState(null);
   const [like, setLiked] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [views, setViews] = useState(0);
   const [error, setError] = useState(null);
@@ -36,6 +37,19 @@ const BlogDetail = () => {
     }
   };
 
+    const toggleBookmark = async () => {
+    try {
+      await axiosPrivate.post(`/info/bookmark/${id}`);
+      setBookmarked(!bookmarked);
+    } catch (err) {
+      console.error('Error bookmarking blog:', err);
+
+      if (err?.response?.status === 401 || err?.response?.status === 403) {
+        navigate('/login', { state: { from: location }, replace: true });
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchBlog = async () => {
       try {
@@ -43,7 +57,10 @@ const BlogDetail = () => {
         const viewsRes = await axiosPrivate.patch(`/blog/${id}/views`);
         try {
           const likeRes = await axiosPrivate.get(`/blog/${id}/like`);
+          const bookmarkRes = await axiosPrivate.get(`/info/bookmark`);
           const liked = likeRes.data.liked;
+          const bookmarks = bookmarkRes.data;
+          setBookmarked(bookmarks.includes(id));
           setLiked(liked);
         } catch (likeError) {
           setLiked(false);
@@ -97,6 +114,16 @@ const BlogDetail = () => {
         <span>{likeCount}</span>
         <FontAwesomeIcon icon={faEye} />
         <span>{views}</span>
+
+        <IconButton
+          icon={faBookmark}
+          state={bookmarked}
+          onColor="blue"
+          offColor="gray"
+          fontSize="1.5rem"
+          toggleFunction={toggleBookmark}
+          ariaLabel="BookMark this post"
+        />
       </div>
 
 

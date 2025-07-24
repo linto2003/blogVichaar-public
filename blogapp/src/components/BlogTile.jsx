@@ -1,10 +1,11 @@
 import '../css/BlogTile.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart, faFire, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faHeart, faFire, faEye, faBookBookmark } from '@fortawesome/free-solid-svg-icons';
 
-const BlogTile = ({ blog }) => {
+const BlogTile = ({ blog , bookmarked}) => {
 
   return (
+    <>
     <div className="blog-tile">
       <img className="avatar" src={blog.imageUrl} alt="blog banner" />
       <h2>{blog.title}</h2>
@@ -26,10 +27,16 @@ const BlogTile = ({ blog }) => {
           <p>{blog.views.length}</p>
 
         </div>
+        <div className="bookmark-row">
+            <span className="fa-layers fa-fw" style={{ fontSize: '2rem' }}>
+              <FontAwesomeIcon icon={faBookBookmark} transform="shrink-4 down-2 right-2" style={{ color: bookmarked ? 'blue' : 'gray' }} />
+            </span>
+          </div>
       </div>
 
       <p><strong>Date:</strong> {new Date(blog.createdAt).toLocaleDateString()}</p>
     </div>
+    </>
   );
 };
 
