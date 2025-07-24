@@ -61,6 +61,7 @@ const BlogDetail = () => {
           const liked = likeRes.data.liked;
           const bookmarks = bookmarkRes.data;
           setBookmarked(bookmarks.includes(id));
+
           setLiked(liked);
         } catch (likeError) {
           setLiked(false);

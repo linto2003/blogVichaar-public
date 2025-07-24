@@ -1,5 +1,5 @@
-// src/components/Navbar.jsx
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import '../css/Navbar.css';
 import useLogout from '../hooks/useLogout';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,18 @@ const Navbar = () => {
   const logout = useLogout();
   const navigate = useNavigate();
   const { auth } = useAuth();
+  const [searchTerm, setSearchTerm] = useState('');
+
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim() !== '') {
+      navigate(`/srch?q=${encodeURIComponent(searchTerm.trim())}`);
+    }else {
+      navigate('/');
+      alert('Please enter a search term.');
+    }
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -20,18 +32,23 @@ const Navbar = () => {
   };
 
   return (
+
     <nav className="navbar">
       <div className="navbar-left">
         <h2 className="logo">BlogVichar</h2>
       </div>
+      <form onSubmit={handleSearch} className="search-form">
+          <input
+            type="text"
+            placeholder="Search blogs..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <button type="submit" className="search-btn">🔍</button>
+        </form>
       <div className="nav-links">
-         {/* <input
-          className='search-input'
-          type="text"
-          placeholder="Search blogs..."
-          id="search-input"
-          
-        /> */}
+
         <Link to="/">Home</Link>
         <Link to="/profile">Profile</Link>
         <Link to="/write">Write</Link>

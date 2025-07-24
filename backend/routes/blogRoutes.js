@@ -40,7 +40,9 @@ router.get('/all', async (req, res) => {
      });
 
 router.get('/search', async (req, res) => {
+  
   try {
+   
     const query = req.query.q;
     const blogs = await blogModel.find({
       $or: [
@@ -48,9 +50,10 @@ router.get('/search', async (req, res) => {
         { tags: new RegExp(query, 'i') },
       ],
     }).sort({ createdAt: -1 });
-
+    
     res.json(blogs);
   } catch (err) {
+     console.error("Search error:", err);
     res.status(500).json({ error: 'Failed to search blogs' });
   }
 })

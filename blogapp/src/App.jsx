@@ -12,6 +12,7 @@ import BlogDetail from './pages/BlogDetail.jsx';
 import CreateBlog from './pages/CreateBlog.jsx';
 import MyBlogs from './pages/MyBlogs.jsx';
 import EditBlogSections from './pages/EditBlog.jsx';
+import SearchResults from './pages/SearchResult.jsx';
 import { useEffect } from 'react';
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route element={<PersistentLogin/>}>
           <Route path='/' element={<Home />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
+          <Route path="/srch" element={<SearchResults />} />
             <Route element={<RequireAuth/>}>
               <Route path="profile" element={<UserProfile />} />
               <Route path="blog/edit/:id" element={<EditBlogSections/>}/>

@@ -1,28 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import BlogTile from '../components/BlogTile';
-import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import '../css/Home.css';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from '../api/axios';
 import { Link } from 'react-router-dom';
+import BlogTile from '../components/BlogTile';
+import '../css/Home.css';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import AdBanner from '../components/AdComponent';
 
-const Home = () => {
-  const [blogs, setBlogs] = useState([]);
+const SearchResults = () => {
+  const [searchParams] = useSearchParams();
+  const query = searchParams.get('q');
+  const [blogs, setResults] = useState([]);
   const [bookmarks, setBookmarks] = useState([]);
   const [loading, setLoading] = useState(true);
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchBlogs = async () => {
+    const fetchResults = async () => {
+      if (!query) return;
       try {
-        const response = await axiosPrivate.get('/blog/all')
-        setBlogs(response.data);
+        const res = await axios.get(`blog/search?q=${query}`);
+        setResults(res.data);
       } catch (error) {
-        const errorMsg = error?.response?.data?.message;
-        if (errorMsg === 'Unauthorized') {
-          navigate('/login',{state: {from: location}, replace:true});
-        }
+        console.error("Search error:", error);
       } finally {
         setLoading(false);
       }
@@ -35,40 +36,34 @@ const Home = () => {
       } catch (error) {
         console.error('Error fetching bookmarks:', error);
       }
-    }
+    };
 
-    fetchBlogs();
+    fetchResults();
     fetchBookmarks();
-  }, [navigate]);
+  }, [query, axiosPrivate]);
 
+ 
   return (
     <>
       <div className="home-container">
-        <h1>Recent Blogs</h1>
+        <h1>Your Search Results</h1>
         {loading ? (
-          <p>Loading...</p>
+          <p>Searching...</p>
         ) : blogs.length > 0 ? (
           <div className="blog-list">
             {blogs.map((blog) => (
-              bookmarks.includes(blog._id) ? (
               <Link to={`/blog/${blog._id}`} className="blog-button-home" key={blog._id}>
-                <BlogTile blog={blog} bookmarked={true}/>
-              </Link>) : (
-              <Link to={`/blog/${blog._id}`} className="blog-button-home" key={blog._id}>
-                <BlogTile blog={blog} bookmarked={false} />  
+                <BlogTile blog={blog} bookmarked={bookmarks.includes(blog._id)} />
               </Link>
-              )
             ))}
-          <AdBanner/>
+            <AdBanner />
           </div>
         ) : (
           <p>No blogs available.</p>
         )}
-      
-      
       </div>
     </>
   );
 };
 
-export default Home;
+export default SearchResults;

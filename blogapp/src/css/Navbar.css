@@ -80,3 +80,27 @@ body {
   text-decoration: underline;
   color: #ff0000;
 }
+
+
+.search-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-input {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 200px; 
+  font-size: 1rem;
+}
+
+.search-btn {
+  padding: 0.5rem;
+  background: #ff7300;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

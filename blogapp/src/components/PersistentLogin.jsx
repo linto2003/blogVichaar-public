@@ -11,7 +11,6 @@ const PersistentLogin = () => {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        console.log("Refreshing token");
         await refresh();
       } catch (err) {
         console.error("Token refresh failed:", err);
@@ -29,10 +28,6 @@ const PersistentLogin = () => {
     }
   }, [auth]); 
 
-
-  useEffect(()=>{
-    console.log(isLoading);
-  },[isLoading])
 
   return (
     <>
