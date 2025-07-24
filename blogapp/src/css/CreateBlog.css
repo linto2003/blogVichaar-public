@@ -34,6 +34,7 @@ input#content {
   border: 1px solid #ccc;
   resize: vertical;
   font-family: 'Merriweather', 'Georgia', serif; 
+  white-space: pre-line;
 }
 
 .preview img {
