@@ -49,7 +49,7 @@ router.get('/search', async (req, res) => {
         { title: new RegExp(query, 'i') },
         { tags: new RegExp(query, 'i') },
       ],
-    }).sort({ createdAt: -1 });
+    }).populate('author', 'username avatarUrl').sort({ createdAt: -1 });
     
     res.json(blogs);
   } catch (err) {
