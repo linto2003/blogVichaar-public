@@ -75,6 +75,7 @@ const CreateBlog = () => {
           instruction="Enter the blog content."
           inputRef={contentRef}
           icon
+          multiline= {true}
         />
 
         <InputField

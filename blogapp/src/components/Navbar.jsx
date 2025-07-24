@@ -25,6 +25,13 @@ const Navbar = () => {
         <h2 className="logo">BlogVichar</h2>
       </div>
       <div className="nav-links">
+         {/* <input
+          className='search-input'
+          type="text"
+          placeholder="Search blogs..."
+          id="search-input"
+          
+        /> */}
         <Link to="/">Home</Link>
         <Link to="/profile">Profile</Link>
         <Link to="/write">Write</Link>

@@ -12,11 +12,26 @@ const InputField = ({
   icon,
   instruction,
   type = "text",
-  inputRef = null
+  inputRef = null,
+  multiline = false
 }) => {
   return (
     <div className="input-group">
       <label htmlFor={id}>{label}</label>
+      {multiline ? (
+        <textarea
+          id={id}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
+          ref={inputRef}
+          aria-invalid={!isValid}
+          aria-describedby={`${id}-note`}
+          rows={10}
+          className="form-textarea"
+        />
+      ) : (
       <div className="input-with-icon">
         <input
           type={type}
@@ -37,12 +52,14 @@ const InputField = ({
           />
         )}
       </div>
+      )}
       {focus && value && !isValid && (
         <p className="instructions">
           <FontAwesomeIcon icon={faInfoCircle} /> {instruction}
         </p>
       )}
     </div>
+    
   );
 };
 

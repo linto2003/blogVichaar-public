@@ -64,3 +64,9 @@ h1 {
 .blog-button:hover {
   background-color: #0056b3;
 }
+
+.blog-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}

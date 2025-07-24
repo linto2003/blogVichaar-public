@@ -28,7 +28,7 @@ const MyBlogs = () => {
     };
 
     fetchBlogs();
-  }, [navigate]);
+  }, [navigate,blogs]);
 
   return (
     <>
@@ -41,9 +41,16 @@ const MyBlogs = () => {
             {blogs.map((blog) => (
                 <div key={blog._id} className="blog-item">
                 <BlogTile blog={blog} />
+                <div className="blog-actions">
                 <Link to={`/blog/edit/${blog._id}`} className="blog-button">
                     Edit
                 </Link>
+                <Link onClick={()=>{axiosPrivate.delete(`/blog/${blog._id}`)
+                alert("Blog Deleted Successfully");}}  
+                to={`/my-blogs`} className="blog-button">
+                    Delete
+                </Link>
+                </div>
                 </div>
             ))}
         
