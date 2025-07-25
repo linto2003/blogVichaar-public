@@ -259,7 +259,7 @@ router.post('/forgot-pass', otpLimiter,async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpMap.set(email, { otp, expiresAt: Date.now() + 5 * 600000 });
     let response = sendMail(email, otp);
-    console.log("OTP", otp);
+    
     if (response instanceof Error) {
         return res.status(500).json({ error: 'Email is Wrong!!' });
     }

@@ -8,20 +8,15 @@ import {useNavigate,useLocation,Link} from 'react-router-dom'
 const USERREGEX = /^[a-zA-Z0-9_]{3,20}$/;
 const PASSWDREGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,24}$/;
 const EMAILREGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const AUTHOR_STATIC ='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUW0u5Eiiy3oM6wcpeEE6sXCzlh8G-tX1_Iw&s';
-const Register = () => {
-  const userRef = useRef();
+
+const ForgotPass = () => {
+  const emailRef = useRef();
   const errRef = useRef();
-  const fileInputRef = useRef();
+
   
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
-  
-
-  const [user, setUser] = useState('');
-  const [validName, setValidName] = useState(false);
-  const [userFocus, setUserFocus] = useState(false);
 
   const [email, setEmail] = useState('');
   const [validEmail, setValidEmail] = useState(false);
@@ -39,48 +34,38 @@ const Register = () => {
   const [validOtp, setValidOtp] = useState(false);
   const [otpFocus, setOtpFocus] = useState(false);
 
-  const [image, setImage] = useState(null);
   const [errMsg, setErrMsg] = useState('');
   
   const [otpSent, setOtpSent] = useState(false);
 
-  useEffect(() => userRef.current.focus(), []);
+  useEffect(() => emailRef.current.focus(),[]);
 
-  useEffect(() => setValidName(USERREGEX.test(user)), [user]);
   useEffect(() => setValidEmail(EMAILREGEX.test(email)), [email]);
+
   useEffect(() => {
     setValidPwd(PASSWDREGEX.test(pwd));
     setValidMPwd(pwd === mpwd);
   }, [pwd, mpwd]);
+
   useEffect(() => {
     setValidOtp(otp.length === 6 && /^\d{6}$/.test(otp));
   }, [otp]);
 
-  useEffect(() => setErrMsg(''), [user, email, pwd, mpwd, otp]);
+  useEffect(() => setErrMsg(''), [email, pwd, mpwd, otp]);
 
   const handleSendOtp = async(e) => {
     e.preventDefault();
-    if (!validName || !validEmail || !validPwd || !validMPwd) {
+    if ( !validEmail) {
       setErrMsg("Please fill all fields correctly before sending OTP.");
       return;
     }
     
-
-     try {
-    const formData = new FormData();
-    formData.append('name', user);
-    formData.append('email', email);
-    formData.append('password', pwd);
-    formData.append('image', image); // if you have image upload
-
-    const response = await axios.post('/auth/request-otp', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+    try {
+    await axios.post('/auth/forgot-pass',  {
+      email,
     });
-
     setOtpSent(true);
-    alert("OTP sent to your email");
+    alert("OTP sent to: your email");
   } catch (error) {
      if (error.response && error.response.data && error.response.data.error) {
     setErrMsg(error.response.data.error); 
@@ -91,34 +76,25 @@ const Register = () => {
         }
   };
 
-
-    const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) setImage(file);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validOtp) {
+    if (!validOtp || !validPwd || !validMPwd) {
       setErrMsg("Invalid or missing OTP.");
       return;
     }
     
      try {
-    const response = await axios.post('/auth/verify-otp', {
+    const response = await axios.post('/auth/reset-pass', {
       email,
       otp,
+      newPassword: pwd
     });
-    
-    navigate(from , {replace: true});
+
+    navigate('login' , {replace: true});
   } catch (error) {
     console.error("OTP verification failed:", error.response.data.error);
     setErrMsg(error.response.data.error);
   }
-  };
-
-  const handlePreviewClick = () => {
-    fileInputRef.current.click();
   };
 
   return (
@@ -128,40 +104,9 @@ const Register = () => {
           <p ref={errRef} className={`errmsg ${errMsg ? 'visible' : 'hidden'}`} aria-live="assertive">
             {errMsg}
           </p>
-          <h1>Register</h1>
-          <label htmlFor="image">Profile Image - only png, jpg, jpeg allowed</label>
-            <input
-              type="file"
-              id="image"
-              accept="image/*"
-              onChange={handleImageChange}
-              ref={fileInputRef}
-              style={{ display: "none" }}
-            />
-
-            <div className="preview" onClick={handlePreviewClick} style={{ cursor: "pointer" }}>
-              <img
-                src={image ? URL.createObjectURL(image) : AUTHOR_STATIC}
-                alt="Preview"
-              />
-            </div>
-            <br />
+          <h1>Reset Password</h1>
           <form className="form-group">
-
-            {/* Username */}
-            <InputField
-              id="username"
-              label="Username"
-              value={user}
-              setValue={setUser}
-              isValid={validName}
-              setFocus={setUserFocus}
-              focus={userFocus}
-              inputRef={userRef}
-              icon={true}
-              instruction="3–20 characters, letters, numbers, and _ allowed."
-            />
-
+           
             {/* Email */}
             <InputField
               id="email"
@@ -171,11 +116,33 @@ const Register = () => {
               isValid={validEmail}
               setFocus={setEmailFocus}
               focus={emailFocus}
+              inputRef={emailRef}
               icon={true}
               instruction="Must be a valid email."
             />
 
-            {/* Password */}
+            {/* Send OTP */}
+            <button className="submit-btn" onClick={handleSendOtp}
+              disabled={ !validEmail  }>
+              Send OTP
+            </button>
+
+            {/* OTP Field */}
+            {otpSent && (
+            <>
+            <InputField
+                id="otp"
+                label="Enter OTP"
+                type="password"
+                value={otp}
+                setValue={setOtp}
+                isValid={validOtp}
+                setFocus={setOtpFocus}
+                focus={otpFocus}
+                icon={true}
+                instruction="6-digit OTP from email."
+            />
+              
             <InputField
               id="password"
               label="Password"
@@ -189,7 +156,6 @@ const Register = () => {
               instruction="8–24 chars, upper, lower, number, special char."
             />
 
-            {/* Confirm Password */}
             <InputField
               id="confirm_pwd"
               label="Confirm Password"
@@ -202,35 +168,16 @@ const Register = () => {
               icon={true}
               instruction="Must match the password."
             />
-
-            {/* Send OTP */}
-            <button className="submit-btn" onClick={handleSendOtp}
-              disabled={!validName || !validEmail || !validPwd || !validMPwd}>
-              Send OTP
-            </button>
-
-            {/* OTP Field */}
-            {otpSent && (
-              <InputField
-                id="otp"
-                label="Enter OTP"
-                type="password"
-                value={otp}
-                setValue={setOtp}
-                isValid={validOtp}
-                setFocus={setOtpFocus}
-                focus={otpFocus}
-                icon={true}
-                instruction="6-digit OTP from email."
-              />
-            )}
+            </>
+            )
+            }
 
             <button
               className="submit-btn"
               onClick={handleSubmit}
-              disabled={!otpSent || !validOtp}
+              disabled={!otpSent || !validOtp |!validPwd || !validMPwd}
             >
-              Sign Up
+              Reset Password
             </button>
           </form>
         </section>
@@ -238,4 +185,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default ForgotPass;

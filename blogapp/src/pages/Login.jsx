@@ -81,6 +81,9 @@ const Login =() =>{
                 {errMsg}
             </p>
             <h1>Login</h1>
+            <br />
+
+            <br />
             <form className="form-group">
 
                 {/* Email */}
@@ -132,6 +135,10 @@ const Login =() =>{
 
                  <p className="signup-prompt">
                     Don't have an account? <Link to="/register">Sign up</Link>
+                </p>
+
+                <p className="signup-prompt">
+                   Forgot Password? <Link to="/forgot">Reset Password</Link>
                 </p>
                 
             </form>

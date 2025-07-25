@@ -14,6 +14,7 @@ import MyBlogs from './pages/MyBlogs.jsx';
 import EditBlogSections from './pages/EditBlog.jsx';
 import SearchResults from './pages/SearchResult.jsx';
 import { useEffect } from 'react';
+import ForgotPass from './pages/ForgotPass.jsx';
 
 function App() {
   useEffect(() => {
@@ -29,6 +30,7 @@ function App() {
       <Route element={<Layout />}>
         <Route path="login" element={<Login/>}/>
         <Route path="register" element={<Register/>}/>
+        <Route path="forgot" element={<ForgotPass/>}/>
       </Route>
 
       <Route  element={<MainLayout/>}>
