@@ -7,7 +7,8 @@ const BlogTile = ({ blog , bookmarked}) => {
   return (
     <>
     <div className="blog-tile">
-      <img className="avatar" src={blog.imageUrl} alt="blog banner" />
+      {blog.imageUrl &&
+      <img className="avatar" src={blog.imageUrl} alt="blog banner" />}
       <h2>{blog.title}</h2>
       <p>{blog.content.slice(0, 200)}...</p>
       <div className="author-details">
