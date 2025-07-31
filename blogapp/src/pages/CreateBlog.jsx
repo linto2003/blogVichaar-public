@@ -49,7 +49,7 @@ const CreateBlog = () => {
   return (
     <div className="create-blog-container">
       <h2>Create a New Blog</h2>
-      <AdBanner />
+      
       <form onSubmit={handleSubmit} className="create-blog-form">
         <InputField
           id="title"
@@ -112,7 +112,7 @@ const CreateBlog = () => {
       <p className="instruction">
         Note: Ensure your image is less than 2MB for optimal performance.
       </p>
-
+    <AdBanner />
     </div>
   );
 };
