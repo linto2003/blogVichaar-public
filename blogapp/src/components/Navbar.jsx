@@ -5,19 +5,21 @@ import useLogout from '../hooks/useLogout';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsisVertical, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const Navbar = () => {
   const logout = useLogout();
   const navigate = useNavigate();
   const { auth } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false);
 
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim() !== '') {
       navigate(`/srch?q=${encodeURIComponent(searchTerm.trim())}`);
+      setSearchTerm('');
     }else {
       navigate('/');
       alert('Please enter a search term.');
@@ -39,6 +41,7 @@ const Navbar = () => {
       <div className="navbar-left">
         <h2 className="logo">BlogVichar</h2>
       </div>
+
       <form onSubmit={handleSearch} className="search-form">
           <input
             type="text"
@@ -51,11 +54,15 @@ const Navbar = () => {
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </form>
-      <div className="nav-links">
 
-        <Link to="/">Home</Link>
-        <Link to="/profile">Profile</Link>
-        <Link to="/write">Write</Link>
+      <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}> 
+        <FontAwesomeIcon icon={faEllipsisVertical}/>
+      </button>
+      <div className={`nav-links ${menuOpen ? 'active' : ''}`}>
+
+        <Link to="/" onClick={() =>setMenuOpen(!menuOpen)}>Home</Link>
+        <Link to="/profile" onClick={() =>setMenuOpen(!menuOpen)}>Profile</Link>
+        <Link to="/write" onClick={() =>setMenuOpen(!menuOpen)}>Write</Link>
         
         {!auth?.accessToken ? (
           <button onClick={handleLogin} className="link-button">
@@ -63,7 +70,7 @@ const Navbar = () => {
           </button>
         ) : (
           <>
-          <Link to="/my-blogs">My Blogs</Link>
+          <Link to="/my-blogs" onClick={() =>setMenuOpen(!menuOpen)} >My Blogs</Link>
           <button onClick={handleLogout} className="link-button logout">
             Logout
           </button>

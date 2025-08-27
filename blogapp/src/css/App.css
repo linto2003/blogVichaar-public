@@ -1,15 +1,48 @@
 /* Root layout */
 #root {
-  width: 100%;
-   padding: 10px 10px 32px 10px; 
-  text-align: center;
+  width: 100%;          
+  margin: 0 auto;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
 }
 
-
+/* Responsive card */
 .card {
-  padding: 2em;
+  padding: 1em;
+  margin: 0.5em 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  background: #fff;
 }
 
+/* Read the docs text */
 .read-the-docs {
   color: #888;
+  font-size: 1rem;
+}
+
+/* Responsive font sizes */
+body, #root {
+  font-size: 1rem;
+}
+
+@media (max-width: 600px) {
+  #root {
+    padding: 8px 2px 24px 2px;
+    font-size: 0.95rem;
+  }
+  .card {
+    padding: 0.8em;
+    font-size: 0.95rem;
+  }
+}
+@media (max-width: 400px) {
+  #root {
+    padding: 6px 1px 16px 1px;
+    font-size: 0.9rem;
+  }
+  .card {
+    padding: 0.5em;
+    font-size: 0.9rem;
+  }
 }

@@ -95,12 +95,12 @@ const BlogDetail = () => {
     <div className="blog-detail-container">
       <img className="avatar" src={blog.imageUrl} alt="blog banner" />
       <h1>{blog.title}</h1>
-      <p className="author">by {blog.author?.username}</p>
       <img
         className="author-avatar"
         src={blog.author?.avatarUrl || '/default-avatar.png'}
         alt="Author Avatar"
       />
+      <p className="author">by {blog.author?.username}</p>
 
       <div className="interaction-section">
         <IconButton

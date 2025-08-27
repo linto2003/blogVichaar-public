@@ -1,106 +1,135 @@
-/* Reset default spacing and box sizing */
+/* Navbar.css */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Fixed full-width navbar */
 .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-
-  background-color: #f5ba13;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-
   display: flex;
+  width: 100%;               
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-}
-
-body {
-  padding-top: 80px; 
+  background: #f5ba13;
+  padding: 10px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .logo {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  font-family: "McLaren", cursive;
-  color: #fff;
+  color: #f9f9f9;
 }
 
-.nav-links {
-  display: flex;
-  align-items: center;
-}
-
-.nav-links a {
-  margin-left: 1rem;
-  text-decoration: none;
-  color: #ffffff;
-  font-family: "McLaren", cursive;
-  font-weight: 700;         
-  font-size: 1.1rem;
-  transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-  text-decoration: underline;
-  color: #000;
-}
-
-.link-button {
-  background: none;
-  border: none;
-  color: #b30000;
-  font-family: "McLaren", cursive;
-  font-weight: 700;         
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.link-button:hover {
-  text-decoration: underline;
-  color: #000;
-}
-
-.link-button.logout {
-  color: #b30000;
-  font-family: "McLaren", cursive;
-  font-weight: 700;         
-  font-size: 1.1rem;
-}
-
-.link-button.logout:hover {
-  text-decoration: underline;
-  color: #ff0000;
-}
-
-
+/* Search */
 .search-form {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  flex: 1;                       /* allow form to grow and take space */
+  margin: 0 20px;
 }
 
 .search-input {
-  padding: 0.5rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  width: 200px; 
-  font-size: 1rem;
+  flex: 1;                       /* input takes most space */
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  font-size: 14px;
 }
 
 .search-btn {
-  padding: 0.5rem;
-  background: #ff7300;
-  color: white;
+  background: #f5ba13;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
+  margin-left: 4px;
+  padding: 8px 10px;
+}
+
+.search-btn:hover {
+  background: #ff6600;
+}
+
+/* Navigation links */
+.nav-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-links a,
+.link-button {
+  text-decoration: none;
+  color: #fff;
+  font-size: 16px;
+  transition: color 0.3s;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.nav-links a:hover,
+.link-button:hover {
+  color: #ff6600;
+}
+
+/* Logout */
+.logout {
+  color: #f44336;
+}
+.logout:hover {
+  color: #ff0000;
+}
+
+/* Hamburger (mobile only) */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 26px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media screen and (max-width: 568px) {
+  .search-form {
+    flex: 1;
+    margin: 0 10px;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    background: #ffb700;
+    flex-direction: column;
+    width: 200px;
+    display: none;
+    padding: 10px 0;
+    border-radius: 4px;
+  }
+
+  .nav-links a,
+  .link-button {
+    padding: 10px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
 }
