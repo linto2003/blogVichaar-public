@@ -91,6 +91,7 @@ const ForgotPass = () => {
     });
 
     alert("Password reset successful! Please log in with your new password.");
+    navigate('/login', { replace: true });
   } catch (error) {
     console.error("OTP verification failed:", error.response.data.error);
     setErrMsg(error.response.data.error);
@@ -179,8 +180,13 @@ const ForgotPass = () => {
             >
               Reset Password
             </button>
-                {/* Link to Login */}
-              <Link to="/login">Go to Login</Link>
+            <button
+              className="submit-btn"
+              onClick={() => { navigate('/login', { replace: true }); }}
+            >
+              Cancel
+            </button>
+                
           </form>
         </section>
     </>
