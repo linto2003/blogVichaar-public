@@ -28,7 +28,7 @@ const otpMap = new Map();
 router.post('/request-otp',otpLimiter,uploadImage.single('image'), async (req, res) => {
     const { name, email, password } = req.body;
     const imageUrl = req.file ? req.file.path :process.env.AUTHOR_STATIC;
-    
+    console.log('Welecome to OTP request');
     const existingUser = await userModel.findOne({
     $or: [
         { email },
