@@ -55,7 +55,7 @@ const ForgotPass = () => {
 
   const handleSendOtp = async(e) => {
     e.preventDefault();
-    if ( !validEmail) {
+    if (!validEmail) {
       setErrMsg("Please fill all fields correctly before sending OTP.");
       return;
     }
@@ -74,6 +74,7 @@ const ForgotPass = () => {
       }
       errRef.current.focus();
     }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
