@@ -61,20 +61,19 @@ const ForgotPass = () => {
     }
     
     try {
-    await axios.post('/auth/forgot-pass',  {
-      email,
-    });
-    setOtpSent(true);
-    alert("OTP sent to your email please check.");
-  } catch (error) {
-     if (error.response && error.response.data && error.response.data.error) {
-    setErrMsg(error.response.data.error); 
-        } else {
-            setErrMsg("Something went wrong. Please try again.");
-        }
-        errRef.current.focus();
-        }
-  };
+      const response = await axios.post('/auth/forgot-pass', {
+        email
+      });
+      alert("OTP sent to your email please check.");
+      setOtpSent(true);
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        setErrMsg(error.response.data.error);
+      } else {
+        setErrMsg("Something went wrong. Please try again.");
+      }
+      errRef.current.focus();
+    }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
