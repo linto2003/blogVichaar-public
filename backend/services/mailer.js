@@ -7,6 +7,9 @@ async function emailSender(to, text) {
         if (!process.env.MAIL || !process.env.APPPASS) {
             throw new Error('Email configuration is missing. Please check MAIL and APPPASS environment variables.');
         }
+        else{
+            console.log('Email configuration found.');
+        }
         
         const transporter = nodemailer.createTransport({
             host: "smtp.gmail.com",
