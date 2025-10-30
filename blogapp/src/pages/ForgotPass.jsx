@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import '../css/Register.css';
 import InputField from "../components/HelperComponent"; 
 import axios from '../api/axios'; 
-import {useNavigate,useLocation,Link, Navigate} from 'react-router-dom'
+import {useNavigate,useLocation,Link} from 'react-router-dom'
 
 
 const USERREGEX = /^[a-zA-Z0-9_]{3,20}$/;
@@ -90,7 +90,7 @@ const ForgotPass = () => {
       newPassword: pwd
     });
 
-    return <Navigate to="/login" replace />;
+    alert("Password reset successful! Please log in with your new password.");
   } catch (error) {
     console.error("OTP verification failed:", error.response.data.error);
     setErrMsg(error.response.data.error);
@@ -179,6 +179,8 @@ const ForgotPass = () => {
             >
               Reset Password
             </button>
+                {/* Link to Login */}
+              <Link to="/login">Go to Login</Link>
           </form>
         </section>
     </>
