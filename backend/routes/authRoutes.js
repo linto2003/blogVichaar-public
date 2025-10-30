@@ -54,7 +54,7 @@ router.post('/request-otp',otpLimiter,uploadImage.single('image'), async (req, r
 
     console.log("Response from mailer:", response); 
     console.log("OTP", otp);
-
+      
 
     if (response instanceof Error) {
             return res.status(500).json({ error: 'Email is Wrong!!' });

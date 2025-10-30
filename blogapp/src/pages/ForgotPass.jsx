@@ -65,7 +65,7 @@ const ForgotPass = () => {
       email,
     });
     setOtpSent(true);
-    alert("OTP sent to: your email");
+    alert("OTP sent to your email please check.");
   } catch (error) {
      if (error.response && error.response.data && error.response.data.error) {
     setErrMsg(error.response.data.error); 
