@@ -90,7 +90,7 @@ const ForgotPass = () => {
       newPassword: pwd
     });
 
-    navigate('login' , {replace: true});
+    navigate('/login' , {replace: true});
   } catch (error) {
     console.error("OTP verification failed:", error.response.data.error);
     setErrMsg(error.response.data.error);
