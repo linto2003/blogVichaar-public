@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const nodemailer = require('nodemailer');
 const path = require('path');
-const emailSender = require('./services/mailer');
+const emailSender = require('../services/mailer');
 
 async function run() {
   // If no MAIL/APPPASS configured, use Ethereal to simulate sending
