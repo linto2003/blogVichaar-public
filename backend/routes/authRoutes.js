@@ -16,7 +16,7 @@ const rateLimit = require('express-rate-limit');
 const jwt = require('jsonwebtoken');
 const otpLimiter = rateLimit({
   windowMs: 5 * 60 * 1000,
-  max: 3,
+  max: 10,
   message: 'Too many OTP requests, try again later.',
   validate: {xForwardedForHeader: false} 
 });
