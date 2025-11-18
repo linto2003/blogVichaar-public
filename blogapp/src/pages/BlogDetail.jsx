@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconButton from '../components/IconButton';
 import { faHeart, faEye, faBookmark} from '@fortawesome/free-solid-svg-icons';
 import AdBanner from '../components/AdComponent';
+import AdSideBar from '../components/AdsideBar';
 
 
 const BlogDetail = () => {
@@ -129,7 +130,7 @@ const BlogDetail = () => {
 
 
     <div className="content">{blog.content}</div>
-
+    <AdSideBar/>
     <AdBanner/>
     </div>
   );
