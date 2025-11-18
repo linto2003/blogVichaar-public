@@ -4,6 +4,7 @@ import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import axios from '../api/axios';
 import '../css/BlogDetail.css';
 import '../css/BlogTile.css';
+import '../css/AdSideBar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import IconButton from '../components/IconButton';
 import { faHeart, faEye, faBookmark} from '@fortawesome/free-solid-svg-icons';
@@ -131,7 +132,6 @@ const BlogDetail = () => {
 
     <div className="content">{blog.content}</div>
     <AdSideBar/>
-    <AdBanner/>
     </div>
   );
 };

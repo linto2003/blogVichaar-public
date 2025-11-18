@@ -1,0 +1,7 @@
+.ad-box {
+  position: fixed;
+  right: 20px;     /* distance from right edge */
+  top: 100px;      /* distance from top */
+  width: 160px;    /* match ad width */
+  height: 600px;   /* match ad height */
+}
